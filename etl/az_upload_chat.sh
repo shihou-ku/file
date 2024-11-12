@@ -1,4 +1,7 @@
-#!/bin/bash 
+#!/bin/bash
+
+script_dir=$(dirname "$(realpath "$0")")
+root_dir=$(realpath "$script_dir/../../..")
 
 # Part 1: Extract data from SQLite database 
 # Define database and output file 
@@ -6,14 +9,15 @@ DATE=$(date +"%Y%m%d")
 YEAR=$(date +"%Y") 
 MONTH=$(date +"%m") 
 
-DATABASE="/home/aishock/Dev/open-webui/backend/data/webui.db"        
-OUTPUT_FILE="/home/aishock/Dev/open-webui/src/etl/output_$DATE.txt"   
+DATABASE="$root_dir/backend/data/webui.db"        
+OUTPUT_FILE="$script_dir/output_$DATE.txt"   
 
 if [[ ! -f "$DATABASE" ]]; then 
     echo "Database file not found!" 
     exit 1 
 fi 
 
+# Execute the SQLite query and save the result to the output file
 sqlite3 "$DATABASE" <<EOF > "$OUTPUT_FILE"
 .headers on
 .mode csv
@@ -24,8 +28,8 @@ FROM chat c
 INNER JOIN user u ON c.user_id = u.id;
 EOF
 
-# Part 2: Upload to azure 
-PYTHON_SCRIPT="/home/aishock/Dev/open-webui/src/etl/az_upload_chat.py"
+# Part 2: Upload to Azure 
+PYTHON_SCRIPT="$script_dir/az_upload_chat.py"
 python3 "$PYTHON_SCRIPT"
 
 rm "$OUTPUT_FILE"

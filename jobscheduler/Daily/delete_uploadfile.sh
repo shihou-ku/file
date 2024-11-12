@@ -1,8 +1,9 @@
 #!/bin/bash 
 
- 
-
-target_dir="/home/aishock/Dev/open-webui/backend/data/uploads" 
+script_dir=$(dirname "$(realpath "$0")")
+root_dir=$(realpath "$script_dir/../../..")
+target_dir="$root_dir/backend/data/uploads"
+#target_dir="/home/aishock/Dev/open-webui/backend/data/uploads" 
 
 # Delete all files in the directory older than 1 day 
 
