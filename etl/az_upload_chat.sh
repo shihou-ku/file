@@ -23,9 +23,11 @@ sqlite3 "$DATABASE" <<EOF > "$OUTPUT_FILE"
 .mode csv
 SELECT  
     SUBSTR(u.email, INSTR(u.email, '@') + 1) AS EmailGroup,  
-    c.*  
+    c.*
+	f.type,f.data, f.meta
 FROM chat c 
-INNER JOIN user u ON c.user_id = u.id;
+INNER JOIN user u ON c.user_id = u.id
+left join feedback f on c.user_id = f.user_id and c.id=json_extract(f.chat_id, '$.message_id');
 EOF
 
 # Part 2: Upload to Azure 
